@@ -5,7 +5,7 @@ public class Data {
     int dia;
     int mes;
     int ano;
-    
+
 
     Data() {
         // dia = 1;

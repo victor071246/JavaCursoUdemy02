@@ -25,7 +25,8 @@ public class Campo {
         observadores.add(observador);
     }
 
-    private void notificarObservadores(CampoEvento evento) {
+
+    private void notificarObservadores(CampoEvento evento){
         observadores.stream()
                 .forEach(o -> o.eventoOcorreu(this, evento));
     }
@@ -54,28 +55,27 @@ public class Campo {
     public void alternarMarcacao(){
         if(!aberto){
             marcado = !marcado;
-        }
 
-        if(marcado){
-            notificarObservadores(CampoEvento.MARCAR);
-        } else{
-            notificarObservadores(CampoEvento.DESMARCAR);
+            if(marcado){
+                notificarObservadores(CampoEvento.MARCAR);
+            } else {
+                notificarObservadores(CampoEvento.DESMARCAR);
+            }
         }
     }
 
     public boolean abrir(){
-
         if(!aberto && !marcado){
-            aberto = true;
+
 
             if(minado){
                 notificarObservadores(CampoEvento.EXPLODIR);
-            return true;
+                return true;
             }
 
             setAberto(true);
-
             notificarObservadores(CampoEvento.ABRIR);
+
 
             if(vizinhancaSegura()){
                 vizinhos.forEach(v -> v.abrir());
@@ -88,7 +88,7 @@ public class Campo {
         }
     }
 
-    boolean vizinhancaSegura(){
+    public boolean vizinhancaSegura(){
         return vizinhos.stream().noneMatch(v -> v.minado);
     }
 
@@ -134,7 +134,7 @@ public class Campo {
         return desvendado || protegido;
     }
 
-    long minasNaVizinhanca() {
+    public long minasNaVizinhanca() {
         return vizinhos.stream().filter(v -> v.minado).count();
     }
 
@@ -142,6 +142,7 @@ public class Campo {
         aberto = false;
         minado = false;
         marcado = false;
+        notificarObservadores(CampoEvento.REINICIAR);
     }
 
 }

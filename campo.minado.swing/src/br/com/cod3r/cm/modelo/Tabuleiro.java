@@ -8,9 +8,9 @@ import java.util.function.Predicate;
 
 public class Tabuleiro implements CampoObservador {
 
-    private int linhas;
-    private int colunas;
-    private int minas;
+    final private int linhas;
+    final private int colunas;
+    final private int minas;
 
     private final List<Campo> campos = new ArrayList<>();
     private final List<Consumer<ResultadoEvento>> observadores = new ArrayList<>();
@@ -25,11 +25,16 @@ public class Tabuleiro implements CampoObservador {
         sortearMinas();
     }
 
-    public void registrarObservador(Consumer<ResultadoEvento> observador){
+    public void paraCadaCampo(Consumer<Campo> funcao){
+        campos.forEach(funcao);
+    }
+
+    public void registrarObservador(Consumer<ResultadoEvento>observador){
         observadores.add(observador);
     }
 
-    private void notificarObservadores(boolean resultado) {observadores.stream().forEach(o -> o.accept(new ResultadoEvento(resultado)));
+    private void notificarObservadores(boolean resultado){
+        observadores.stream().forEach(o -> o.accept(new ResultadoEvento(resultado)));
     }
 
     public  void abrir(int linha, int coluna){
@@ -88,20 +93,24 @@ public class Tabuleiro implements CampoObservador {
         sortearMinas();
     }
 
+    public int getLinhas() {
+        return linhas;
+    }
+
+    public int getColunas() {
+        return colunas;
+    }
+
     @Override
     public void eventoOcorreu(Campo campo, CampoEvento evento) {
-        mostrarMinas();
-        if(evento == CampoEvento.EXPLODIR){
-            System.out.println("Perdeu... :(");
+        if(evento == CampoEvento.EXPLODIR) {
+            mostrarMinas();
             notificarObservadores(false);
-        } else if (objetivoAlcancado()) {
+        } else if(objetivoAlcancado()){
             notificarObservadores(true);
         }
     }
-    private void mostrarMinas(){
-        campos.stream().
-                filter(c -> c.isMinado())
-                .forEach(c -> c.setAberto(true));
-
+    public void mostrarMinas(){
+        campos.stream().filter(c -> c.isMinado()).forEach(c -> c.setAberto(true));
     }
 }

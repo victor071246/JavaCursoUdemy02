@@ -1,26 +1,28 @@
-package modelo.basico;
+package modelo.umpraum;
 
 import javax.persistence.*;
 
 @Entity
-public class Usuario {
+@Table(name = "clientes")
+public class Cliente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     private String nome;
 
-    private String email;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "assento_id", unique = true)
+    private Assento assento;
 
-    public  Usuario(){
+    public  Cliente(){
 
     }
 
-    public Usuario(String nome, String email) {
+    public Cliente(String nome, Assento assento) {
         this.nome = nome;
-        this.email = email;
+        this.assento = assento;
     }
 
     public Long getId() {
@@ -30,13 +32,6 @@ public class Usuario {
     public void setId(Long id) {
         this.id = id;
     }
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
     public String getNome() {
         return nome;
@@ -44,5 +39,13 @@ public class Usuario {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public Assento getAssento() {
+        return assento;
+    }
+
+    public void setAssento(Assento assento) {
+        this.assento = assento;
     }
 }
